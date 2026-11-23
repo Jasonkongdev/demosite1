@@ -435,30 +435,40 @@
       .reveal {
         opacity: 0;
         transform: translateY(32px);
-        transition: opacity 0.7s ease, transform 0.7s ease;
       }
 
       .reveal.visible {
-        opacity: 1;
-        transform: translateY(0);
+        animation: revealUp 0.7s ease forwards;
       }
 
-      .section1-card.reveal:nth-child(1) { transition-delay: 0.05s; }
-      .section1-card.reveal:nth-child(2) { transition-delay: 0.15s; }
-      .section1-card.reveal:nth-child(3) { transition-delay: 0.25s; }
+      @keyframes revealUp {
+        from {
+          opacity: 0;
+          transform: translateY(32px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-      .initiative.reveal:nth-child(1) { transition-delay: 0.05s; }
-      .initiative.reveal:nth-child(2) { transition-delay: 0.12s; }
-      .initiative.reveal:nth-child(3) { transition-delay: 0.19s; }
-      .initiative.reveal:nth-child(4) { transition-delay: 0.26s; }
+      /* staggered intro (animation-delay does not affect hover transitions) */
+      .section1-card.reveal.visible:nth-child(1) { animation-delay: 0.05s; }
+      .section1-card.reveal.visible:nth-child(2) { animation-delay: 0.15s; }
+      .section1-card.reveal.visible:nth-child(3) { animation-delay: 0.25s; }
 
-      .section3-card.reveal:nth-child(1) { transition-delay: 0.05s; }
-      .section3-card.reveal:nth-child(2) { transition-delay: 0.12s; }
-      .section3-card.reveal:nth-child(3) { transition-delay: 0.19s; }
-      .section3-card.reveal:nth-child(4) { transition-delay: 0.26s; }
+      .initiative.reveal.visible:nth-child(1) { animation-delay: 0.05s; }
+      .initiative.reveal.visible:nth-child(2) { animation-delay: 0.12s; }
+      .initiative.reveal.visible:nth-child(3) { animation-delay: 0.19s; }
+      .initiative.reveal.visible:nth-child(4) { animation-delay: 0.26s; }
 
-      .section-header.reveal {
-        transition-delay: 0s;
+      .section3-card.reveal.visible:nth-child(1) { animation-delay: 0.05s; }
+      .section3-card.reveal.visible:nth-child(2) { animation-delay: 0.12s; }
+      .section3-card.reveal.visible:nth-child(3) { animation-delay: 0.19s; }
+      .section3-card.reveal.visible:nth-child(4) { animation-delay: 0.26s; }
+
+      .section-header.reveal.visible {
+        animation-delay: 0s;
       }
     }
 

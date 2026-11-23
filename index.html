@@ -89,6 +89,7 @@
       font-size: clamp(1.1rem, 2vw, 1.35rem);
       color: var(--green-800);
       letter-spacing: -0.02em;
+      white-space: nowrap;
     }
 
     .logo-icon {
@@ -106,25 +107,26 @@
       display: block;
     }
 
-    nav {
+    header nav {
       display: flex;
       align-items: center;
       gap: clamp(1rem, 2.2vw, 2rem);
     }
 
-    nav a {
+    header nav a {
       font-size: clamp(0.85rem, 1.3vw, 0.95rem);
       font-weight: 500;
       color: var(--text-muted);
       transition: color var(--transition);
       position: relative;
+      white-space: nowrap;
     }
 
-    nav a:hover {
+    header nav a:hover {
       color: var(--green-700);
     }
 
-    nav a::after {
+    header nav a::after {
       content: '';
       position: absolute;
       bottom: -4px;
@@ -135,7 +137,7 @@
       transition: width var(--transition);
     }
 
-    nav a:hover::after {
+    header nav a:hover::after {
       width: 100%;
     }
 
@@ -166,18 +168,18 @@
     }
 
     /* Header Demo Button only — custom hover */
-    nav a.btn-primary {
+    header nav a.btn-primary {
       color: white !important;
       background: var(--green-500);
       background-image: none;
       transition: background-color 0.5s ease, transform 0.25s ease, box-shadow 0.25s ease !important;
     }
 
-    nav a.btn-primary::after {
+    header nav a.btn-primary::after {
       display: none !important;
     }
 
-    nav a.btn-primary:hover {
+    header nav a.btn-primary:hover {
       color: white !important;
       background-color: var(--green-400);
       background-image: none;
@@ -222,6 +224,15 @@
     .mobile-toggle:active {
       background: var(--green-100);
       outline: none;
+    }
+
+    /* Dynamic mobile menu switch when header items would wrap or overflow */
+    body.mobile-mode header nav {
+      display: none;
+    }
+
+    body.mobile-mode .mobile-toggle {
+      display: flex;
     }
 
     /* Mobile navigation drawer */
@@ -799,10 +810,6 @@
         justify-content: center;
       }
 
-      .hero-visual {
-        order: -1;
-      }
-
       .section1-grid {
         grid-template-columns: 1fr;
       }
@@ -821,14 +828,6 @@
     }
 
     @media (max-width: 680px) {
-      nav {
-        display: none;
-      }
-
-      .mobile-toggle {
-        display: flex;
-      }
-
       .hero {
         padding: 7rem 1.25rem 3.5rem;
       }
@@ -851,8 +850,8 @@
       }
 
       .hero-stats {
-        flex-direction: column;
-        gap: 1.2rem;
+        flex-direction: row;
+        gap: 1.5rem;
         align-items: center;
       }
 
@@ -1141,6 +1140,9 @@
       var nav = document.getElementById('mobileNav');
       var overlay = document.getElementById('mobileOverlay');
       var body = document.body;
+      var navContainer = document.querySelector('.nav-container');
+      var logo = document.querySelector('.logo');
+      var desktopNav = document.querySelector('header nav');
 
       if (!toggle || !nav || !overlay) {
         console.warn('Mobile menu elements not found');
@@ -1181,6 +1183,39 @@
         }
       }
 
+      // Dynamically check whether header items would wrap or overflow
+      function checkHeaderOverflow() {
+        if (!navContainer || !logo || !desktopNav) return;
+
+        // Temporarily switch back to desktop state to measure accurate width
+        body.classList.remove('mobile-mode');
+
+        var containerStyle = window.getComputedStyle(navContainer);
+        var paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+        var paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+        var availableWidth = navContainer.clientWidth - paddingLeft - paddingRight;
+
+        // Logo width + desktop nav width + buffer spacing (24px)
+        var requiredWidth = logo.offsetWidth + desktopNav.offsetWidth + 24;
+
+        if (requiredWidth > availableWidth) {
+          body.classList.add('mobile-mode');
+        } else {
+          body.classList.remove('mobile-mode');
+          if (isOpen) {
+            closeMenu(); // Auto-close mobile menu when enough space is available
+          }
+        }
+      }
+
+      // Listen for window resize, load, and font loading completion
+      window.addEventListener('resize', checkHeaderOverflow, false);
+      window.addEventListener('load', checkHeaderOverflow, false);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(checkHeaderOverflow);
+      }
+      checkHeaderOverflow(); // Run once immediately
+
       // Use multiple event types for better iOS compatibility
       toggle.addEventListener('click', toggleMenu, false);
       toggle.addEventListener('touchend', function (e) {
@@ -1203,13 +1238,6 @@
       // Close on Escape key
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && isOpen) {
-          closeMenu();
-        }
-      }, false);
-
-      // Close menu if window is resized to desktop width
-      window.addEventListener('resize', function () {
-        if (window.innerWidth > 680 && isOpen) {
           closeMenu();
         }
       }, false);
@@ -1242,8 +1270,13 @@
       var observer = new IntersectionObserver(function (entries) {
         for (var k = 0; k < entries.length; k++) {
           if (entries[k].isIntersecting) {
-            entries[k].target.classList.add('visible');
-            observer.unobserve(entries[k].target); // only first time
+            var el = entries[k].target;
+            el.classList.add('visible');
+            el.addEventListener('animationend', function () {
+              this.classList.remove('reveal', 'visible');
+            }, { once: true });
+
+            observer.unobserve(el); // only first time
           }
         }
       }, {

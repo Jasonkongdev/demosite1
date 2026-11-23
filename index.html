@@ -200,17 +200,17 @@
 
     .mobile-toggle {
       display: none;
-      background: none;
-      border: none;
-      font-size: clamp(1.3rem, 4vw, 1.6rem);
+      background: var(--green-50);
+      border: 1px solid var(--green-200);
+      font-size: clamp(1.2rem, 3.8vw, 1.45rem);
       color: var(--green-800);
       cursor: pointer;
-      width: clamp(42px, 10vw, 48px);
-      height: clamp(42px, 10vw, 48px);
+      width: clamp(42px, 10vw, 46px);
+      height: clamp(42px, 10vw, 46px);
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
-      transition: background var(--transition);
+      border-radius: 14px;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
       z-index: 130;
       position: relative;
       -webkit-tap-highlight-color: transparent;
@@ -223,7 +223,18 @@
     .mobile-toggle:focus,
     .mobile-toggle:active {
       background: var(--green-100);
+      border-color: var(--green-300);
+      color: var(--green-900);
+      box-shadow: 0 6px 16px rgba(46, 125, 71, 0.14);
       outline: none;
+    }
+
+    .mobile-toggle.is-active {
+      background: var(--green-600);
+      border-color: var(--green-600);
+      color: var(--white);
+      transform: rotate(90deg);
+      box-shadow: 0 8px 20px rgba(46, 125, 71, 0.25);
     }
 
     /* Dynamic mobile menu switch when header items would wrap or overflow */
@@ -235,22 +246,24 @@
       display: flex;
     }
 
-    /* Mobile navigation drawer */
+    /* Fresh & inviting mobile navigation drawer */
     .mobile-nav {
       position: fixed;
       top: 0;
       right: 0;
-      width: min(300px, 85vw);
+      width: min(320px, 86vw);
       height: 100%;
-      background: var(--white);
-      box-shadow: -8px 0 30px rgba(30, 77, 46, 0.12);
+      background: linear-gradient(180deg, var(--cream) 0%, var(--green-50) 100%);
+      backdrop-filter: blur(14px);
+      border-left: 1px solid var(--green-200);
+      box-shadow: -14px 0 40px rgba(21, 59, 36, 0.14);
       z-index: 110;
-      padding: 5.5rem 1.5rem 2rem;
+      padding: 1.5rem 1.35rem 2rem;
       transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.45rem;
       overflow-y: auto;
     }
 
@@ -258,33 +271,95 @@
       transform: translateX(0);
     }
 
-    .mobile-nav a {
-      display: block;
-      padding: 0.9rem 1rem;
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: var(--text);
-      border-radius: 12px;
-      transition: background var(--transition), color var(--transition);
+    .mobile-nav-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.35rem 0.4rem 1.15rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--green-200);
     }
 
-    .mobile-nav a:hover,
-    .mobile-nav a:focus {
-      background: var(--green-50);
+    .mobile-nav-header .logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+    }
+
+    .mobile-nav-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .mobile-nav-brand strong {
+      font-size: 1.02rem;
+      color: var(--green-900);
+      font-weight: 700;
+    }
+
+    .mobile-nav-brand span {
+      font-size: 0.78rem;
       color: var(--green-700);
+      font-weight: 500;
+    }
+
+    .mobile-nav a:not(.btn) {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid transparent;
+      border-radius: 14px;
+      transition: transform var(--transition), background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .mobile-nav a:not(.btn)::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--green-400);
+      margin-right: 0.75rem;
+      opacity: 0.55;
+      transition: transform var(--transition), background var(--transition), opacity var(--transition);
+    }
+
+    .mobile-nav a:not(.btn):hover,
+    .mobile-nav a:not(.btn):focus {
+      background: var(--white);
+      color: var(--green-800);
+      border-color: var(--green-200);
+      transform: translateX(-3px);
+      box-shadow: 0 6px 16px rgba(46, 125, 71, 0.08);
       outline: none;
     }
 
+    .mobile-nav a:not(.btn):hover::before,
+    .mobile-nav a:not(.btn):focus::before {
+      background: var(--green-600);
+      opacity: 1;
+      transform: scale(1.35);
+    }
+
     .mobile-nav .btn {
-      margin-top: 1rem;
+      margin-top: auto;
+      padding-top: 0.85rem;
+      padding-bottom: 0.85rem;
       width: 100%;
       justify-content: center;
+      border-radius: 14px;
     }
 
     .mobile-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(21, 59, 36, 0.35);
+      background: rgba(21, 59, 36, 0.28);
+      backdrop-filter: blur(3px);
       z-index: 105;
       opacity: 0;
       visibility: hidden;
@@ -953,6 +1028,15 @@
   <!-- Mobile menu overlay + drawer -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+    <div class="mobile-nav-header">
+      <span class="logo-icon">
+        <img src="images/website_demo_logo.png" alt="Demo Site logo" />
+      </span>
+      <div class="mobile-nav-brand">
+        <strong>Demo Site</strong>
+        <span>Fresh Navigation</span>
+      </div>
+    </div>
     <a href="#section1">Demo Link 1</a>
     <a href="#section2">Demo Link 2</a>
     <a href="#section3">Demo Link 3</a>
@@ -1156,6 +1240,7 @@
         nav.classList.add('open');
         overlay.classList.add('open');
         body.classList.add('menu-open');
+        toggle.classList.add('is-active');
         toggle.setAttribute('aria-expanded', 'true');
         toggle.setAttribute('aria-label', 'Close menu');
         toggle.innerHTML = '✕';
@@ -1166,6 +1251,7 @@
         nav.classList.remove('open');
         overlay.classList.remove('open');
         body.classList.remove('menu-open');
+        toggle.classList.remove('is-active');
         toggle.setAttribute('aria-expanded', 'false');
         toggle.setAttribute('aria-label', 'Open menu');
         toggle.innerHTML = '☰';
